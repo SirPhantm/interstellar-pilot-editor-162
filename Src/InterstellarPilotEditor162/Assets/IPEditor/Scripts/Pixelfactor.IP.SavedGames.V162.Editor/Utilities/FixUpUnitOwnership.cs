@@ -30,25 +30,46 @@ namespace Pixelfactor.IP.SavedGames.V162.Editor.Utilities
 
         public static void SetFleetChildrenToSameFaction(EditorSavedGame editorSavedGame)
         {
-            foreach (var editorFleet in editorSavedGame.GetComponentsInChildren<EditorFleet>())
+            if (editorSavedGame == null)
             {
-                if (editorFleet.Faction != null)
+                Debug.LogError("EditorSavedGame is null.");
+                return;
+            }
+
+            var fleets = editorSavedGame.GetComponentsInChildren<EditorFleet>();
+            if (fleets == null)
+            {
+                Debug.LogError("No EditorFleet components found.");
+                return;
+            }
+
+            foreach (var editorFleet in fleets)
+            {
+                if (editorFleet != null && editorFleet.Faction != null)
                 {
-                    foreach (var editorUnit in editorFleet.GetComponentsInChildren<EditorUnit>())
+                    var units = editorFleet.GetComponentsInChildren<EditorUnit>();
+                    if (units != null)
                     {
-                        if (editorUnit.Faction != editorFleet.Faction)
+                        foreach (var editorUnit in units)
                         {
-                            editorUnit.Faction = editorFleet.Faction;
-                            EditorUtility.SetDirty(editorUnit);
+                            if (editorUnit != null && editorUnit.Faction != editorFleet.Faction)
+                            {
+                                editorUnit.Faction = editorFleet.Faction;
+                                EditorUtility.SetDirty(editorUnit);
+                            }
                         }
                     }
 
-                    foreach (var editorPerson in editorFleet.GetComponentsInChildren<EditorPerson>())
+                    var persons = editorFleet.GetComponentsInChildren<EditorPerson>();
+                    if (persons != null)
                     {
-                        if (editorPerson.Faction != editorFleet.Faction)
+                        foreach (var editorPerson in persons)
                         {
-                            editorPerson.Faction = editorFleet.Faction;
-                            EditorUtility.SetDirty(editorPerson);
+                            if (editorPerson != null && editorPerson.Faction != editorFleet.Faction)
+                            {
+                                editorPerson.Faction = editorFleet.Faction;
+                                EditorUtility.SetDirty(editorPerson);
+                            }
                         }
                     }
                 }

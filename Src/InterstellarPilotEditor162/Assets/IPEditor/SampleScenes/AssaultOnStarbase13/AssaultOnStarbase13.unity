@@ -38,7 +38,6 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -3727,6 +3726,7 @@ MonoBehaviour:
     wait order and second an attack order with the target being the TEF trade station.
     There are 3 different type of wait order timings corresponding to the timings
     of the three waves of attack.
+  CustomScreenOffset: {x: 0, y: 0}
 --- !u!4 &405297239
 Transform:
   m_ObjectHideFlags: 0
@@ -15194,7 +15194,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1499588013825266274, guid: cc3f97cade22fa4469c7c9575d3c8f76, type: 3}
       propertyPath: m_RootOrder
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 1499588013825266274, guid: cc3f97cade22fa4469c7c9575d3c8f76, type: 3}
       propertyPath: m_LocalPosition.x
@@ -16755,7 +16755,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1499588013825266274, guid: b9977210c125b3b46a63629ec30ad4f8, type: 3}
       propertyPath: m_RootOrder
-      value: 4
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 1499588013825266274, guid: b9977210c125b3b46a63629ec30ad4f8, type: 3}
       propertyPath: m_LocalPosition.x
@@ -18458,6 +18458,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1884125942}
   - component: {fileID: 1884125943}
+  - component: {fileID: 1884125944}
   m_Layer: 0
   m_Name: SavedGame
   m_TagString: Untagged
@@ -18497,6 +18498,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   RandomEventsEnabled: 0
   PreferredWormholeDistance: 2000
+--- !u!114 &1884125944
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1884125941}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a6f9aef8552af4ea698679ee198ff5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AutoCreateFleets: 1
 --- !u!1001 &1884167619
 PrefabInstance:
   m_ObjectHideFlags: 0

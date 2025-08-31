@@ -2,6 +2,7 @@
 using Pixelfactor.IP.SavedGames.V162.Editor.EditorObjects;
 using Pixelfactor.IP.SavedGames.V162.Editor.EditorObjects.FleetOrders.OrderTypes;
 using Pixelfactor.IP.SavedGames.V162.Model;
+using System;
 using System.Linq;
 using UnityEngine;
 
@@ -40,7 +41,9 @@ namespace Pixelfactor.IP.SavedGames.V162.Editor.Utilities
             }
 
             ExportHeader(editorSavedGame, savedGame);
-            SeedFactionIntel(editorSavedGame, savedGame);
+            SeedFactionIntel(editorSavedGame,
+                savedGame, options.discoverWormholes, options.discoverEverything,
+                options.discoverEverythingIncludesBandits, options.aiDiscoversBandits);
 
             return savedGame;
 
@@ -191,12 +194,19 @@ namespace Pixelfactor.IP.SavedGames.V162.Editor.Utilities
         /// </summary>
         /// <param name="editorSavedGame"></param>
         /// <param name="savedGame"></param>
-        private static void SeedFactionIntel(EditorSavedGame editorSavedGame, SavedGame savedGame)
+        private static void SeedFactionIntel(EditorSavedGame editorSavedGame,
+            SavedGame savedGame, bool discoverWormholes, bool discoverEverything,
+            bool discoverEverythingIncludesBandits, bool aiDiscoversBandits)
         {
             // Npc factions rely on the faction intel database. Without it they will have a hard time navigating
             // This could be built up in the editor
             foreach (var faction in savedGame.Factions)
             {
+
+                if (discoverEverything) {
+                    discoverWormholes = true;
+                } 
+
                 if (faction.Intel == null)
                 {
                     faction.Intel = new Model.FactionIntel();
@@ -204,9 +214,42 @@ namespace Pixelfactor.IP.SavedGames.V162.Editor.Utilities
 
                 foreach (var unit in savedGame.Units)
                 {
-                    if (unit.IsStation() && unit.Faction?.FactionType != FactionType.Bandit)
+
+                
+                    // AI Intel Seeding
+                    if (unit.IsStation() && faction != savedGame.Player?.Faction)
+                    {
+                        if (aiDiscoversBandits)
+                        {
+                            faction.Intel.Units.Add(unit);
+                        } 
+                        else if (unit.Faction?.FactionType != FactionType.Bandit)
+                        {
+                            faction.Intel.Units.Add(unit);
+                        }
+                    }
+                    // Player Intel Seeding
+                    if (faction != savedGame.Player?.Faction)
+                    {
+                        continue;
+                    }
+                    Debug.Log(faction.CustomName + " is player");
+
+                    if (unit.IsWormhole() && discoverWormholes)
                     {
                         faction.Intel.Units.Add(unit);
+                    }
+
+                    else if (unit.IsStation() && discoverEverything)
+                    {
+                        if (discoverEverythingIncludesBandits)
+                        {
+                            faction.Intel.Units.Add(unit);
+                        }
+                        else if (unit.Faction?.FactionType != FactionType.Bandit)
+                        {
+                            faction.Intel.Units.Add(unit);
+                        }
                     }
                 }
             }
@@ -247,7 +290,7 @@ namespace Pixelfactor.IP.SavedGames.V162.Editor.Utilities
         }
 
         /// <summary>
-        /// Used to set up the universe map
+        /// Used to set up the universe map original multiplier 0.02
         /// </summary>
         /// <param name="editorSavedGame"></param>
         /// <param name="savedGame"></param>
@@ -256,7 +299,7 @@ namespace Pixelfactor.IP.SavedGames.V162.Editor.Utilities
             // TODO: 
             foreach (var editorSector in editorSavedGame.GetComponentsInChildren<EditorSector>())
             {
-                var multiplier = 0.02f;
+                var multiplier = 0.01f;
                 var sector = savedGame.Sectors.Single(e => e.Id == editorSector.Id);
                 sector.MapPosition = new Vec3
                 {
@@ -291,7 +334,6 @@ namespace Pixelfactor.IP.SavedGames.V162.Editor.Utilities
         {
             savedGame.ScenarioData = new Model.ScenarioData
             {
-
                 HasRandomEvents = editorSavedGame.RandomEventsEnabled,
                 NextRandomEventTime = 240d
             };
@@ -631,7 +673,7 @@ namespace Pixelfactor.IP.SavedGames.V162.Editor.Utilities
                 if (string.IsNullOrWhiteSpace(unit.Name))
                 {
                     const int maxShipNames = 1272;  // Don't touch
-                    unit.ComponentUnitData.ShipNameIndex = Random.Range(0, maxShipNames);
+                    unit.ComponentUnitData.ShipNameIndex = UnityEngine.Random.Range(0, maxShipNames);
                 }
 
                 ExportComponentUnitCargo(unit, editorComponentData);

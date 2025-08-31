@@ -1,6 +1,7 @@
 using System.IO;
 using UnityEditor;
 using UnityEngine;
+using Pixelfactor.IP.SavedGames.V162.BinarySerialization; // Removed due to missing namespace
 
 namespace Pixelfactor.IP.SavedGames.V162.Editor.Utilities
 {
