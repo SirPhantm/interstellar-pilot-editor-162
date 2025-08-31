@@ -23,7 +23,7 @@ namespace Pixelfactor.IP.SavedGames.V162.Editor.Utilities
 
             ExportSectors(editorSavedGame, savedGame);
             PositionSectorsForEngine(editorSavedGame, savedGame);
-            SetSectorMapPositions(editorSavedGame, savedGame);
+            SetSectorMapPositions(editorSavedGame, savedGame, options.mapScaleMultiplier);
             ExportFactions(editorSavedGame, savedGame);
             ExportFactionRelations(editorSavedGame, savedGame);
             ExportUnits(editorSavedGame, savedGame);
@@ -290,21 +290,20 @@ namespace Pixelfactor.IP.SavedGames.V162.Editor.Utilities
         }
 
         /// <summary>
-        /// Used to set up the universe map original multiplier 0.02
+        /// Used to set up the universe map
         /// </summary>
         /// <param name="editorSavedGame"></param>
         /// <param name="savedGame"></param>
-        private static void SetSectorMapPositions(EditorSavedGame editorSavedGame, SavedGame savedGame)
+        private static void SetSectorMapPositions(EditorSavedGame editorSavedGame, SavedGame savedGame, float mapScaleMultiplier)
         {
             // TODO: 
             foreach (var editorSector in editorSavedGame.GetComponentsInChildren<EditorSector>())
             {
-                var multiplier = 0.01f;
                 var sector = savedGame.Sectors.Single(e => e.Id == editorSector.Id);
                 sector.MapPosition = new Vec3
                 {
-                    X = editorSector.transform.position.x * multiplier,
-                    Z = editorSector.transform.position.z * multiplier
+                    X = editorSector.transform.position.x * mapScaleMultiplier,
+                    Z = editorSector.transform.position.z * mapScaleMultiplier
                 };
             }
         }
